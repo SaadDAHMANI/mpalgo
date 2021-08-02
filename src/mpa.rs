@@ -30,8 +30,12 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
       let mut iter =0;  
       let FADs = 0.2;
       let p = 0.5;
+       
+      while iter < max_iter {
 
 
+
+      }
 
      return top_predator_fit;   
 }
