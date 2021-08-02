@@ -12,16 +12,18 @@ include!("mpa.rs");
 
 fn main() {
     println!("Marine Predators Algorithm (MPA)");
-    let n : usize =10; //search agents number
-    let d : usize = 5; //search space dimension 
-    let kmax : usize = 1; //iterations count
-    let lb : f64 =-100.00; //lower bound of the search space
-    let ub : f64 = 100.00; //uper bound of the search space 
+     let n : usize =10; //search agents number
+     let d : usize = 5; //search space dimension 
+     let kmax : usize = 1; //iterations count
+     let lb : f64 =-100.00; //lower bound of the search space
+     let ub : f64 = 100.00; //uper bound of the search space 
 
     
-    let bestfit = mpa(n,kmax,lb,ub,d, &f1);
+     let bestfit = mpa(n,kmax,lb,ub,d, &f1);
 
-    println!("the best fitness = {}", bestfit);
+     println!("the best fitness = {}", bestfit);
+
+     
 
 }
 
