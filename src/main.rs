@@ -21,7 +21,8 @@ fn main() {
     
     let bestfit = mpa(n,kmax,lb,ub,d, &f1);
 
-    print!("the best fitness = {}", bestfit);
+    println!("the best fitness = {}", bestfit);
+
 }
 
 fn f1(x : Vec<f64>)-> f64 {
