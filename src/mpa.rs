@@ -2,7 +2,7 @@ use rand::distributions::Distribution;
 use rand::distributions::Uniform;
 
 
-fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : usize, fobj : &dyn Fn(Vec<f64>)->f64) -> f64 {
+fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : usize, fobj : &dyn Fn(&Vec<f64>)->f64) -> f64 {
      
 
      println!("computation with : n= {}, d= {}, kmax= {}, lb= {}, ub ={} of ",searchagents_no, dim, max_iter, lb,ub);
@@ -32,9 +32,23 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
       let p = 0.5;
        
       while iter < max_iter {
-
-
-
+           //------------------- Detecting top predator ----------------- 
+           for i in 0..searchagents_no {
+               
+                fitness[i]=fobj(&prey[i]); //fitness(i,1)=fobj(Prey(i,:));
+           
+                // if fitness(i,1)<Top_predator_fit 
+                // Top_predator_fit=fitness(i,1); 
+                // Top_predator_pos=Prey(i,:);
+                // end
+                
+                if fitness[i] < top_predator_fit { //copy informations of the best search agent
+                     top_predator_fit = fitness[i];
+                     for j in 0..dim {
+                          top_predator_pos[j]=prey[i][j];
+                     } 
+                }
+          }    
       }
 
      return top_predator_fit;   
