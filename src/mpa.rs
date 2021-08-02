@@ -23,6 +23,9 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
       
       let xmin = repmat(searchagents_no, dim, lb); //Xmin=repmat(ones(1,dim).*lb,SearchAgents_no,1);
       let xmax = repmat(searchagents_no, dim, ub); //Xmax=repmat(ones(1,dim).*ub,SearchAgents_no,1); 
+      
+      write_matrix(&xmin, String::from("Xmin"));
+      write_matrix(&xmax, String::from("Xmax"));
 
       let mut iter =0;  
       let FADs = 0.2;
