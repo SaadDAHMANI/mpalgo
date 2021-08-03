@@ -99,6 +99,17 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
               fitness[i]=inx[i]*fit_old[i]+tild_inx[i]*fitness[i];
          }
 
+         //fit_old=fitness; 
+          for i in 0..searchagents_no {
+               fit_old[i]=fitness[i];
+          }
+
+         //Prey_old=Prey;
+          for i in 0..searchagents_no {
+               for j in 0..dim {
+                    prey_old[i][j]=prey[i][j];
+               }
+          }
           //------------------------------------------------------------   
            
 
