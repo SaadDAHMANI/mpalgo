@@ -29,7 +29,8 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
       // write_matrix(&xmin, String::from("Xmin"));
       // write_matrix(&xmax, String::from("Xmax"));
 
-      let mut iter =0;  
+      let mut iter =0;
+      let mut cf: f64;  
       let FADs = 0.2;
       let p = 0.5;
 
@@ -112,6 +113,12 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
           }
           //------------------------------------------------------------   
            
+          let elite = repmat2(&top_predator_pos, searchagents_no);
+          //write_matrix(&elite, String::from("elite"));
+          let root  : f64 = (1-(iter/max_iter)) as f64;
+          let powr : f64 = (2*iter/max_iter) as f64; 
+
+          cf=root.powf(powr);
 
           iter +=1;  
       }
