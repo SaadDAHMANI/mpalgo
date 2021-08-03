@@ -80,8 +80,24 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
               }
           }
 
-          inferior(&mut inx, &fit_old, &fitness);
-          write_vector(&inx, String::from("inx"));
+          inferior(&mut inx, &fit_old, &fitness); //  Inx=(fit_old<fitness);
+          //write_vector(&inx, String::from("inx"));
+           
+          //Prey=Indx.*Prey_old+~Indx.*Prey;
+          let indx = repmat2(&inx, dim); //Indx=repmat(Inx,1,dim);
+          let tild_indx = tild(&indx);
+
+          for i in 0..searchagents_no {
+               for j in 0..dim {
+                    prey[i][j]=indx[i][j]*prey_old[i][j]+tild_indx[i][j]*prey[i][j];
+               }
+          }
+          
+          //fitness=Inx.*fit_old+~Inx.*fitness;  
+         let tild_inx = tild2(&inx);
+         for i in 0..searchagents_no {
+              fitness[i]=inx[i]*fit_old[i]+tild_inx[i]*fitness[i];
+         }
 
           //------------------------------------------------------------   
            
@@ -117,6 +133,17 @@ fn repmat(n: usize ,d : usize, value : f64) -> Vec<Vec<f64>> {
       matrix
 }
 
+fn repmat2(source : &Vec<f64>, times : usize)-> Vec<Vec<f64>> {
+      let l = source.len();
+      let mut outvec = vec![vec![0.0f64; times]; l];      
+      for i in 0..l {
+          for j in 0..times {
+               outvec[i][j]= source[i];
+          }  
+      }
+      outvec
+}
+
 fn inferior(result : &mut Vec<f64>, x : &Vec<f64>, y : &Vec<f64>) {
      let t = x.len();
      for i in 0..t {
@@ -125,6 +152,40 @@ fn inferior(result : &mut Vec<f64>, x : &Vec<f64>, y : &Vec<f64>) {
           } 
           else {result[i]=0.0f64;}
      }
+}
+
+fn tild(source : &Vec<Vec<f64>>)-> Vec<Vec<f64>> {
+     let m = source.len();
+     let n = source[0].len();
+     let mut outmatrix = vec![vec![0.0f64; n]; m];
+
+     for i in 0..m {
+          for j in 0..n {
+               if source[i][j]==1.0f64 {
+                    outmatrix[i][j]=0.0f64;
+               }
+               else {
+                    outmatrix[i][j]=1.0f64;
+               }
+          }
+     }
+     outmatrix
+} 
+
+fn tild2(source : &Vec<f64>)-> Vec<f64> {
+      let m = source.len();
+      let mut outmatrix = vec![0.0f64; m];
+
+     for i in 0..m {
+          if source[i]==1.0f64 {
+                outmatrix[i]= 0.0f64;
+          }
+          else {
+                outmatrix[i]=1.0f64;
+          }
+     }
+   
+     outmatrix
 } 
 
 fn write_matrix(x: &Vec<Vec<f64>>, message :String) {
