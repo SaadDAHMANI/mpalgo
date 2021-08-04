@@ -1,6 +1,11 @@
 use rand::distributions::Distribution;
 use rand::distributions::Uniform;
+use rand::distributions;
 
+//use rand_distr::{Normal, NormalError};
+use special::Gamma;
+
+pub const PI: f64 = 3.14159265358979323846264338327950288f64;
 
 fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : usize, fobj : &dyn Fn(&Vec<f64>)->f64) -> f64 {
      
@@ -117,12 +122,14 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
           }
           //------------------------------------------------------------   
            
-          let elite = repmat2(&top_predator_pos, searchagents_no);
+          let elite = repmat2(&top_predator_pos, searchagents_no); //%(Eq. 10)
           //write_matrix(&elite, String::from("elite"))
 
           cf=(1.0-(iterf64/max_iterf64)).powf(2.0*iterf64/max_iterf64);
 
-          println!("cf = {}", cf);
+          //Levy random number vector
+          let rl = 0.05*levy(searchagents_no, dim, 1.50);
+
 
           iter +=1;
           iterf64+=1.0f64;
@@ -211,6 +218,46 @@ fn tild2(source : &Vec<f64>)-> Vec<f64> {
    
      outmatrix
 } 
+
+fn levy(n : usize, m : usize, beta : f64)->f64 {
+
+      //num = gamma(1+beta)*sin(pi*beta/2); % used for Numerator 
+      let num = Gamma::gamma(1.0+beta)*(0.5*PI*beta).sin(); 
+      // println!("gamma num : {}", num);
+       
+      // den = gamma((1+beta)/2)*beta*2^((beta-1)/2); % used for Denominator
+      let den = Gamma::gamma(0.5*(1.0+beta))*beta*2.0f64.powf(0.5*(beta - 1.0)); 
+      //println!("gamma den : {}",den);
+
+      // sigma_u = (num/den)^(1/beta);% Standard deviation
+      let sigma_u = (num/den).powf(1.0/beta);
+
+      //u = random('Normal',0,sigma_u,n,m);    
+      //v = random('Normal',0,1,n,m);
+      //z =u./(abs(v).^(1/beta));
+
+      let mut z = vec![vec![0.0f64; m];n];
+      let mut u : f64 = 0.0;
+      let mut v : f64 = 0.0;
+
+      let mut rng = rand::thread_rng();
+      //let normal = Normal::new(0.0, sigma_u);
+      //let v = normalsample(&mut rng);    
+
+
+      for i in 0..n {
+            for j in 0..m {
+               //let r = Normal::new(0.0,sigma_u);
+
+               }
+            }
+      
+
+
+      den 
+
+
+}
 
 fn write_matrix(x: &Vec<Vec<f64>>, message :&str) {
 
