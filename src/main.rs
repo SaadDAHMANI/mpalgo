@@ -14,7 +14,7 @@ fn main() {
     println!("Marine Predators Algorithm (MPA)");
      let n : usize =4; //search agents number
      let d : usize = 5; //search space dimension 
-     let kmax : usize = 1; //iterations count
+     let kmax : usize = 5; //iterations count
      let lb : f64 =-100.00; //lower bound of the search space
      let ub : f64 = 100.00; //uper bound of the search space 
 

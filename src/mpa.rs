@@ -36,7 +36,11 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
 
       //-------------for random values generation ----------
       let intervall01 = Uniform::from(0.0f64..1.0f64);
-      let mut rng = rand::thread_rng();              
+      let mut rng = rand::thread_rng(); 
+      
+      //-------------- to use f64 format
+      let mut iterf64 : f64 = 0.0f64;
+      let max_iterf64 : f64 = max_iter as f64;
       
       //----------------------------------------------------
        
@@ -114,13 +118,15 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
           //------------------------------------------------------------   
            
           let elite = repmat2(&top_predator_pos, searchagents_no);
-          //write_matrix(&elite, String::from("elite"));
-          let root  : f64 = (1-(iter/max_iter)) as f64;
-          let powr : f64 = (2*iter/max_iter) as f64; 
+          //write_matrix(&elite, String::from("elite"))
 
-          cf=root.powf(powr);
+          cf=(1.0-(iterf64/max_iterf64)).powf(2.0*iterf64/max_iterf64);
 
-          iter +=1;  
+          println!("cf = {}", cf);
+
+          iter +=1;
+          iterf64+=1.0f64;
+            
       }
 
      return top_predator_fit;   
@@ -206,7 +212,7 @@ fn tild2(source : &Vec<f64>)-> Vec<f64> {
      outmatrix
 } 
 
-fn write_matrix(x: &Vec<Vec<f64>>, message :String) {
+fn write_matrix(x: &Vec<Vec<f64>>, message :&str) {
 
       println!("{}", message);
 
@@ -219,7 +225,7 @@ fn write_matrix(x: &Vec<Vec<f64>>, message :String) {
 }
 
 
-fn write_vector(x: &Vec<f64>, message :String) {
+fn write_vector(x: &Vec<f64>, message : &str) {
 
      println!("{}", message);
      for i in 0..x.len(){
