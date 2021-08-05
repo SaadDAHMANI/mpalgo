@@ -103,12 +103,12 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
           //write_vector(&inx, String::from("inx"));
            
           //Prey=Indx.*Prey_old+~Indx.*Prey;
-          let indx = repmat2(&inx, dim); //Indx=repmat(Inx,1,dim);
+          let indx = repmat3(&inx, dim); //Indx=repmat(Inx,1,dim);
           let tild_indx = tild(&indx);
 
           for i in 0..searchagents_no {
                for j in 0..dim {
-                    prey[i][j]=indx[i][j]*prey_old[i][j]+tild_indx[i][j]*prey[i][j];
+                    prey[i][j] = indx[i][j]*prey_old[i][j]+tild_indx[i][j]*prey[i][j];
                }
           }
           
@@ -235,7 +235,7 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
           //write_vector(&inx, String::from("inx"));
            
           //Prey=Indx.*Prey_old+~Indx.*Prey;
-          let indx = repmat2(&inx, dim); //Indx=repmat(Inx,1,dim);
+          let indx = repmat3(&inx, dim); //Indx=repmat(Inx,1,dim);
           let tild_indx = tild(&indx);
 
           for i in 0..searchagents_no {
@@ -322,16 +322,31 @@ fn repmat(n: usize ,d : usize, value : f64) -> Vec<Vec<f64>> {
       matrix
 }
 
-fn repmat2(source : &Vec<f64>, times : usize)-> Vec<Vec<f64>> {
-      let l = source.len();
-      let mut outvec = vec![vec![0.0f64; l]; times];      
+fn repmat2(raw : &Vec<f64>, times : usize)-> Vec<Vec<f64>> {
+      let jcount = raw.len();
+      let mut outvec = vec![vec![0.0f64; jcount]; times]; 
+       
       for i in 0..times {
-          for j in 0..l {
-               outvec[i][j]= source[i];
-          }  
+           for j in 0..jcount {
+                outvec[i][j] = raw[j];
+           }
       }
       outvec
 }
+
+fn repmat3(column : &Vec<f64>, times : usize)-> Vec<Vec<f64>> {
+     let icount = column.len();
+     let mut outvec = vec![vec![0.0f64; times]; icount];
+     
+     for j in 0..times {
+          for i in 0..icount {
+                outvec[i][j]=column[i];
+           }
+      }
+
+     outvec
+
+     }
 
 fn inferior(result : &mut Vec<f64>, x : &Vec<f64>, y : &Vec<f64>) {
      let t = x.len();
