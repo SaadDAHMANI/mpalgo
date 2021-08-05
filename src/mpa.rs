@@ -1,6 +1,5 @@
 use rand::distributions::Distribution;
 use rand::distributions::Uniform;
-use rand::distributions;
 
 //use rand_distr::{Normal, NormalError};
 use special::Gamma;
