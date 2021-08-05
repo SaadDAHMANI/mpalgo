@@ -421,19 +421,19 @@ fn levy(n : usize, m : usize, beta : f64)-> Vec<Vec<f64>> {
       //z =u./(abs(v).^(1/beta));
 
       let mut z = vec![vec![0.0f64; m];n];
-      let mut u : f64 = 0.0;
-      let mut v : f64 = 0.0;
+      //let mut u : f64 = 0.0;
+      //let mut v : f64 = 0.0;
 
       
       for i in 0..n {
             for j in 0..m {
                 //u = random('Normal',0,sigma_u,n,m); 
                 let normal_u = Normal::new(0.0, sigma_u).unwrap();
-                u = normal_u.sample(&mut rand::thread_rng());
+                let u = normal_u.sample(&mut rand::thread_rng());
 
                  //v = random('Normal',0,1,n,m);    
-                let normal_v =Normal::new(0.0, 1.0).unwrap();
-                v = normal_v.sample(&mut rand::thread_rng());
+                let normal_v =Normal::new(0.0f64, 1.0f64).unwrap();
+                let v = normal_v.sample(&mut rand::thread_rng());
                 
                 //z =u./(abs(v).^(1/beta));
                 z[i][j]= (0.05*u)/(v.abs().powf(1.0/beta));
