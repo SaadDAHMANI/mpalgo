@@ -35,7 +35,7 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
 
       let mut iter =0;
       let mut cf: f64;  
-      let FADs = 0.2;
+      let fads = 0.2;
       let p = 0.5;
 
       //-------------for random values generation ----------
@@ -55,8 +55,14 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
                 // space bound    
                 for i in 0.. searchagents_no {
                      for j in 0..dim {
-                          if prey[i][j] < lb || prey[i][j] > ub {
-                               prey[i][j] = intervall01.sample(&mut rng)*(ub-lb)+lb;
+                          //if prey[i][j] < lb || prey[i][j] > ub {
+                            //   prey[i][j] = intervall01.sample(&mut rng)*(ub-lb)+lb;
+                          //}
+                          if prey[i][j] < lb {
+                               prey[i][j]=lb;
+                          }
+                          if prey[i][j]>ub {
+                               prey[i][j]=ub;
                           }
                      } 
                 }
@@ -122,12 +128,161 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
           //------------------------------------------------------------   
            
           let elite = repmat2(&top_predator_pos, searchagents_no); //%(Eq. 10)
-          //write_matrix(&elite, String::from("elite"))
+          write_matrix(&elite, String::from("elite").as_str());
 
           cf=(1.0-(iterf64/max_iterf64)).powf(2.0*iterf64/max_iterf64);
 
           //Levy random number vector
-          let rl = 0.05*levy(searchagents_no, dim, 1.50);
+          //RL=0.05*levy(SearchAgents_no,dim,1.5); 
+          //0.05*levy(..) is integrated in levy function
+          let rl = levy(searchagents_no, dim, 1.50);
+          //write_matrix(&rl, &String::from("RL").as_str());
+          
+          //Brownian random number vector (matrix)
+          //RB=randn(SearchAgents_no,dim); 
+          let rb = randn(searchagents_no, dim);
+          
+          for i in 0..searchagents_no {
+
+               for j in 0..dim {
+                    let r = intervall01.sample(&mut rng);
+
+                    //------------------ Phase 1 (Eq.12) -----
+
+                    if iter < (max_iter/3) {
+                          //stepsize(i,j)=RB(i,j)*(Elite(i,j)-RB(i,j)*Prey(i,j));
+                          stepsize[i][j]=rb[i][j]*elite[i][j]-rb[i][j]*prey[i][j];
+                    
+                          // Prey(i,j)=Prey(i,j)+P*R*stepsize(i,j);
+                          prey[i][j]=prey[i][j]+p*r*stepsize[i][j];
+                    } 
+                    //--------------- Phase 2 (Eqs. 13 & 14)------
+                    else if iter>(max_iter/3) && iter<(2*max_iter/3) {
+                          if i > (searchagents_no/2) {
+                               //stepsize(i,j)=RB(i,j)*(RB(i,j)*Elite(i,j)-Prey(i,j));
+                               stepsize[i][j]=rb[i][j]*(rb[i][j]*elite[i][j]-prey[i][j]);
+
+                               //Prey(i,j)=Elite(i,j)+P*CF*stepsize(i,j); 
+                               prey[i][j]=elite[i][j]+p*cf*stepsize[i][j];     
+                          } 
+                          else {
+                               //stepsize(i,j)=RL(i,j)*(Elite(i,j)-RL(i,j)*Prey(i,j));
+                               stepsize[i][j]=rl[i][j]*(elite[i][j]-rl[i][j]*prey[i][j]);
+
+                               //Prey(i,j)=Prey(i,j)+P*R*stepsize(i,j); 
+                               prey[i][j]=prey[i][j]+p*r*stepsize[i][j]; 
+                          }
+                    }
+                    //----------------- Phase 3 (Eq. 15)-------
+                    else {
+                         //stepsize(i,j)=RL(i,j)*(RL(i,j)*Elite(i,j)-Prey(i,j)); 
+                         stepsize[i][j]=rl[i][j]*(rl[i][j]*elite[i][j]-prey[i][j]); 
+                         
+                         //Prey(i,j)=Elite(i,j)+P*CF*stepsize(i,j);  
+                         prey[i][j]=elite[i][j]+p*cf*stepsize[i][j]; 
+                    }
+               }
+          }
+
+          //----------------- Detecting top predator ----
+          for i in 0.. searchagents_no {
+
+               // space bound    
+                for j in 0..dim {
+                     //if prey[i][j] < lb || prey[i][j] > ub {
+                     //   prey[i][j] = intervall01.sample(&mut rng)*(ub-lb)+lb;
+                     //}
+                     if prey[i][j] < lb {
+                          prey[i][j]=lb;
+                     }
+                     if prey[i][j]>ub {
+                          prey[i][j]=ub;
+                     }
+                }
+
+                //fitness(i,1)=fobj(Prey(i,:));
+                fitness[i]=fobj(&prey[i]);
+
+                if fitness[i] < top_predator_fit {
+                    //Top_predator_fit=fitness(i,1);
+                    top_predator_fit = fitness[i];
+                    
+                    //Top_predator_pos=Prey(i,:); //copy information
+                    for j in 0..dim {
+                         top_predator_pos[j]=prey[i][j];
+                    }
+                }  
+          }
+             
+          //------------------- Marine Memory saving -------------------
+          if iter == 0 { 
+               for i in 0..searchagents_no {
+                fit_old[i] = fitness[i];       
+               }   
+            
+               for i in 0..searchagents_no {
+                    for j in 0..dim {
+                     prey_old[i][j] = prey[i][j];
+                   }    
+              }
+          }
+          
+          inferior(&mut inx, &fit_old, &fitness); //  Inx=(fit_old<fitness);
+          //write_vector(&inx, String::from("inx"));
+           
+          //Prey=Indx.*Prey_old+~Indx.*Prey;
+          let indx = repmat2(&inx, dim); //Indx=repmat(Inx,1,dim);
+          let tild_indx = tild(&indx);
+
+          for i in 0..searchagents_no {
+               for j in 0..dim {
+                    prey[i][j]=indx[i][j]*prey_old[i][j]+tild_indx[i][j]*prey[i][j];
+               }
+          }
+          
+          //fitness=Inx.*fit_old+~Inx.*fitness;  
+         let tild_inx = tild2(&inx);
+         for i in 0..searchagents_no {
+              fitness[i]=inx[i]*fit_old[i]+tild_inx[i]*fitness[i];
+         }
+
+         //fit_old=fitness; 
+          for i in 0..searchagents_no {
+               fit_old[i]=fitness[i];
+          }
+
+         //Prey_old=Prey;
+          for i in 0..searchagents_no {
+               for j in 0..dim {
+                    prey_old[i][j]=prey[i][j];
+               }
+          }
+
+     //---------- Eddy formation and FADs� effect (Eq 16) ----------- 
+     
+     let r = intervall01.sample(&mut rng);
+     if r<fads {
+           // U=rand(SearchAgents_no,dim)<FADs;
+           let randmatrix = random(searchagents_no, dim);
+           let u = get_u_matrix(&randmatrix,fads);
+           
+           //Prey=Prey+CF*((Xmin+rand(SearchAgents_no,dim).*(Xmax-Xmin)).*U);
+           let randmatrix2 = random(searchagents_no, dim);   
+           
+           for i in 0..searchagents_no {
+                for j in 0..dim {
+                     prey[i][j]=prey[i][j]+cf*((xmin[i][j] + randmatrix2[i][j]*(xmax[i][j]-xmin[i][j]))*u[i][j]);
+                }
+           }
+     }
+     else{
+          let rr = intervall01.sample(&mut rng);
+
+     }
+
+
+
+
 
 
           iter +=1;
@@ -251,12 +406,58 @@ fn levy(n : usize, m : usize, beta : f64)-> Vec<Vec<f64>> {
                 v = normal_v.sample(&mut rand::thread_rng());
                 
                 //z =u./(abs(v).^(1/beta));
-                z[i][j]= u/(v.abs().powf(1.0/beta));
-
+                z[i][j]= (0.05*u)/(v.abs().powf(1.0/beta));
                }
             }
           return  z; 
 }
+
+fn randn(n : usize, m : usize)->Vec<Vec<f64>> {
+    //Brownian random number matrix
+    let mut brownian = vec![vec![0.0f64; m]; n];
+
+    for i in 0..n {
+         for j in 0..m {
+          let normal =Normal::new(0.0, 1.0).unwrap();
+          brownian[i][j]=normal.sample(&mut rand::thread_rng());
+      }
+    }
+    brownian 
+}
+
+fn random(n : usize, m : usize)->Vec<Vec<f64>> {
+      let mut randmatrix = vec![vec![0.0f64; m]; n];
+      let intervall01 = Uniform::from(0.0f64..1.0f64);
+      let mut rng = rand::thread_rng();              
+      
+      for i in 0..n {
+           for  j in 0..m {   
+                randmatrix[i][j] = intervall01.sample(&mut rng);                         
+           }
+      }   
+     return randmatrix;
+}
+
+fn get_u_matrix (source : &Vec<Vec<f64>>, value : f64)-> Vec<Vec<f64>> {
+
+     let n =  source.len();
+     let m = source[0].len();
+     let mut result = vec![vec![0.0f64; m];n];
+
+     for i in 0..n {
+          for j in 0..m {
+               if source[i][j] < value {
+                    result[i][j] =1.0; 
+               }
+               else {
+                    result[i][j] =0.0;
+               }
+          }
+     }
+     return result;
+} 
+
+
 
 fn write_matrix(x: &Vec<Vec<f64>>, message :&str) {
 

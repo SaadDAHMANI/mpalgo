@@ -23,7 +23,13 @@ fn main() {
 
      println!("the best fitness = {}", bestfit);
      
-    normal_dist();
+     let r = 11/3;
+     println!("r/3 = {:?}",r);
+
+    //normal_dist();
+
+    
+
      
 
 }
@@ -40,7 +46,7 @@ fn f1(x : &Vec<f64>)-> f64 {
 fn normal_dist(){
  
     // mean 2, standard deviation 3
-    let normal = Normal::new(0.0, 1.16).unwrap();
+    let normal = Normal::new(0.0, 1.0).unwrap();
     let v = normal.sample(&mut rand::thread_rng());
     println!("{} is from a N(2, 9) distribution", v);
     
