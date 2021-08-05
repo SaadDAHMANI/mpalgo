@@ -1,6 +1,10 @@
 use rand::distributions::Distribution;
 use rand::distributions::Uniform;
 use rand_distr::Normal;
+
+
+use rand::seq::SliceRandom;
+
 //use rand_distr::{Normal, NormalError};
 use special::Gamma;
 
@@ -275,7 +279,7 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
                 }
            }
      }
-     else{
+     else {
           let rr = intervall01.sample(&mut rng);
 
      }
@@ -320,9 +324,9 @@ fn repmat(n: usize ,d : usize, value : f64) -> Vec<Vec<f64>> {
 
 fn repmat2(source : &Vec<f64>, times : usize)-> Vec<Vec<f64>> {
       let l = source.len();
-      let mut outvec = vec![vec![0.0f64; times]; l];      
-      for i in 0..l {
-          for j in 0..times {
+      let mut outvec = vec![vec![0.0f64; l]; times];      
+      for i in 0..times {
+          for j in 0..l {
                outvec[i][j]= source[i];
           }  
       }
@@ -456,6 +460,13 @@ fn get_u_matrix (source : &Vec<Vec<f64>>, value : f64)-> Vec<Vec<f64>> {
      }
      return result;
 } 
+
+fn randperm (length : usize)-> Vec<usize> {
+
+      let mut vec: Vec<usize> = (0..length).collect();
+      vec.shuffle(&mut rand::thread_rng());
+      return vec;
+}
 
 
 

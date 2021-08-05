@@ -26,7 +26,8 @@ fn main() {
      let r = 11/3;
      println!("r/3 = {:?}",r);
 
-    //normal_dist();
+    let s= randperm2(10);
+    println!("{:?}", s);
 
     
 
@@ -43,12 +44,10 @@ fn f1(x : &Vec<f64>)-> f64 {
     sum
 }
 
-fn normal_dist(){
- 
-    // mean 2, standard deviation 3
-    let normal = Normal::new(0.0, 1.0).unwrap();
-    let v = normal.sample(&mut rand::thread_rng());
-    println!("{} is from a N(2, 9) distribution", v);
-    
-   
+
+fn randperm2 (length : usize)-> Vec<usize> {
+
+   let mut vec: Vec<usize> = (0..length).collect();
+     vec.shuffle(&mut rand::thread_rng());
+    return vec;
 }
