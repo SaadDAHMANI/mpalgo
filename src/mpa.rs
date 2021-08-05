@@ -10,7 +10,7 @@ use special::Gamma;
 
 pub const PI: f64 = 3.14159265358979323846264338327950288f64;
 
-fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : usize, fobj : &dyn Fn(&Vec<f64>)->f64) -> f64 {
+fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : usize, fobj : &dyn Fn(&Vec<f64>)->f64) -> (Vec<f64>,f64) {
      
       println!("computation with : n= {}, d= {}, kmax= {}, lb= {}, ub ={} of ",searchagents_no, dim, max_iter, lb,ub);
      
@@ -132,7 +132,7 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
           //------------------------------------------------------------   
            
           let elite = repmat2(&top_predator_pos, searchagents_no); //%(Eq. 10)
-          write_matrix(&elite, String::from("elite").as_str());
+          //write_matrix(&elite, String::from("elite").as_str());
 
           cf=(1.0-(iterf64/max_iterf64)).powf(2.0*iterf64/max_iterf64);
 
@@ -280,21 +280,32 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
            }
      }
      else {
-          let rr = intervall01.sample(&mut rng);
+           //r=rand();  Rs=size(Prey,1);
+           let rr = intervall01.sample(&mut rng);
+          
+           //stepsize=(FADs*(1-r)+r)*(Prey(randperm(Rs),:)-Prey(randperm(Rs),:));
+           let randvec1 = randperm(searchagents_no);
+           let randvec2 = randperm(searchagents_no);
+           for i in 0..searchagents_no {
+                for j in 0..dim {                     
+                 stepsize[i][j] = (fads*(1.0-rr)+rr) * (prey[randvec1[i]][j] - prey[randvec2[i]][j]);       
+                }                
+           }
 
+           // Prey=Prey+stepsize;
+           for i in 0..searchagents_no {
+                for j in 0..dim {
+                     prey[i][j]= prey[i][j]+stepsize[i][j]; 
+                }
+           }
      }
-
-
-
-
-
-
+       
+          convergence_curve[iter] = top_predator_fit;
           iter +=1;
           iterf64+=1.0f64;
-            
-      }
-
-     return top_predator_fit;   
+         
+      }       
+         return (top_predator_pos , top_predator_fit);   
 }
 
 
@@ -477,7 +488,6 @@ fn get_u_matrix (source : &Vec<Vec<f64>>, value : f64)-> Vec<Vec<f64>> {
 } 
 
 fn randperm (length : usize)-> Vec<usize> {
-
       let mut vec: Vec<usize> = (0..length).collect();
       vec.shuffle(&mut rand::thread_rng());
       return vec;

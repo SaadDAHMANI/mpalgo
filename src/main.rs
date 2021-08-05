@@ -12,26 +12,18 @@ include!("mpa.rs");
 
 fn main() {
     println!("Marine Predators Algorithm (MPA)");
-     let n : usize =4; //search agents number
+     let n : usize = 4; //search agents number
      let d : usize = 5; //search space dimension 
-     let kmax : usize = 1; //iterations count
+     let kmax : usize = 1000; //iterations count
      let lb : f64 =-100.00; //lower bound of the search space
      let ub : f64 = 100.00; //uper bound of the search space 
-
     
-     let bestfit = mpa(n,kmax,lb,ub,d, &f1);
+     let (bestsolution, bestfit) = mpa(n,kmax,lb,ub,d, &f1);
 
-     println!("the best fitness = {}", bestfit);
-     
-     let r = 11/3;
-     println!("r/3 = {:?}",r);
+     println!("the best solution is {:?}", bestsolution);
 
-    let s= randperm2(10);
-    println!("{:?}", s);
-
-    
-
-     
+     println!("the best fitness = {}", bestfit);   
+   
 
 }
 
@@ -45,9 +37,3 @@ fn f1(x : &Vec<f64>)-> f64 {
 }
 
 
-fn randperm2 (length : usize)-> Vec<usize> {
-
-   let mut vec: Vec<usize> = (0..length).collect();
-     vec.shuffle(&mut rand::thread_rng());
-    return vec;
-}
