@@ -1,6 +1,6 @@
 use rand::distributions::Distribution;
 use rand::distributions::Uniform;
-
+use rand_distr::Normal;
 //use rand_distr::{Normal, NormalError};
 use special::Gamma;
 
@@ -218,7 +218,7 @@ fn tild2(source : &Vec<f64>)-> Vec<f64> {
      outmatrix
 } 
 
-fn levy(n : usize, m : usize, beta : f64)->f64 {
+fn levy(n : usize, m : usize, beta : f64)-> Vec<Vec<f64>> {
 
       //num = gamma(1+beta)*sin(pi*beta/2); % used for Numerator 
       let num = Gamma::gamma(1.0+beta)*(0.5*PI*beta).sin(); 
@@ -239,23 +239,23 @@ fn levy(n : usize, m : usize, beta : f64)->f64 {
       let mut u : f64 = 0.0;
       let mut v : f64 = 0.0;
 
-      let mut rng = rand::thread_rng();
-      //let normal = Normal::new(0.0, sigma_u);
-      //let v = normalsample(&mut rng);    
-
-
+      
       for i in 0..n {
             for j in 0..m {
-               //let r = Normal::new(0.0,sigma_u);
+                //u = random('Normal',0,sigma_u,n,m); 
+                let normal_u = Normal::new(0.0, sigma_u).unwrap();
+                u = normal_u.sample(&mut rand::thread_rng());
+
+                 //v = random('Normal',0,1,n,m);    
+                let normal_v =Normal::new(0.0, 1.0).unwrap();
+                v = normal_v.sample(&mut rand::thread_rng());
+                
+                //z =u./(abs(v).^(1/beta));
+                z[i][j]= u/(v.abs().powf(1.0/beta));
 
                }
             }
-      
-
-
-      den 
-
-
+          return  z; 
 }
 
 fn write_matrix(x: &Vec<Vec<f64>>, message :&str) {
