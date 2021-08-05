@@ -1,11 +1,7 @@
 use rand::distributions::Distribution;
 use rand::distributions::Uniform;
 use rand_distr::Normal;
-
-
 use rand::seq::SliceRandom;
-
-//use rand_distr::{Normal, NormalError};
 use special::Gamma;
 
 pub const PI: f64 = 3.14159265358979323846264338327950288f64;
@@ -493,8 +489,6 @@ fn randperm (length : usize)-> Vec<usize> {
       return vec;
 }
 
-
-
 fn write_matrix(x: &Vec<Vec<f64>>, message :&str) {
 
       println!("{}", message);
@@ -506,7 +500,6 @@ fn write_matrix(x: &Vec<Vec<f64>>, message :&str) {
           println!("_");
       }        
 }
-
 
 fn write_vector(x: &Vec<f64>, message : &str) {
 
