@@ -10,7 +10,7 @@ use special::Gamma;
 
 pub const PI: f64 = 3.14159265358979323846264338327950288f64;
 
-fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : usize, fobj : &dyn Fn(&Vec<f64>)->f64) -> (Vec<f64>,f64) {
+fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : usize, fobj : &dyn Fn(&Vec<f64>)->f64) -> (f64, Vec<f64>, Vec<f64>) {
      
       println!("computation with : n= {}, d= {}, kmax= {}, lb= {}, ub ={} of ",searchagents_no, dim, max_iter, lb,ub);
      
@@ -305,7 +305,7 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
           iterf64+=1.0f64;
          
       }       
-         return (top_predator_pos , top_predator_fit);   
+         return (top_predator_fit, top_predator_pos, convergence_curve);   
 }
 
 

@@ -12,13 +12,13 @@ include!("mpa.rs");
 
 fn main() {
     println!("Marine Predators Algorithm (MPA)");
-     let n : usize = 4; //search agents number
-     let d : usize = 5; //search space dimension 
-     let kmax : usize = 1000; //iterations count
-     let lb : f64 =-100.00; //lower bound of the search space
-     let ub : f64 = 100.00; //uper bound of the search space 
+     let n : usize = 10; //search agents number
+     let d : usize = 10; //search space dimension 
+     let kmax : usize = 500; //iterations count
+     let lb : f64 =-10.00; //lower bound of the search space
+     let ub : f64 = 10.00; //uper bound of the search space 
     
-     let (bestsolution, bestfit) = mpa(n,kmax,lb,ub,d, &f1);
+     let (bestsolution, bestfit) = mpa(n,kmax,lb,ub,d, &f2);
 
      println!("the best solution is {:?}", bestsolution);
 
@@ -34,6 +34,18 @@ fn f1(x : &Vec<f64>)-> f64 {
     sum += value.powi(2);
     }  
     sum
+}
+
+fn f2(x: &Vec<f64>)-> f64 {
+    //o=sum(abs(x))+prod(abs(x));
+    let mut sum : f64 = 0.0;
+    let mut prod : f64 =1.0;
+
+     for value in x.iter(){
+         sum += value.abs();
+         prod *=value.abs();
+     }  
+       sum + prod    
 }
 
 
