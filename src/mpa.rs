@@ -65,15 +65,15 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
                 // space bound    
                 for i in 0.. searchagents_no {
                      for j in 0..dim {
-                         if prey[i][j] < lb || prey[i][j] > ub {
-                            prey[i][j] = intervall01.sample(&mut rng)*(ub-lb)+lb;
+                         //if prey[i][j] < lb || prey[i][j] > ub {
+                         //   prey[i][j] = intervall01.sample(&mut rng)*(ub-lb)+lb;
+                         //}
+                          if prey[i][j] < lb {
+                               prey[i][j]=lb;
                          }
-                         // if prey[i][j] < lb {
-                         //      prey[i][j]=lb;
-                         // }
-                         // if prey[i][j]>ub {
-                          //     prey[i][j]=ub;
-                          //}
+                          if prey[i][j]>ub {
+                              prey[i][j]=ub;
+                         }
                      } 
                 }
                
@@ -199,15 +199,15 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
 
                // space bound    
                 for j in 0..dim {
-                     if prey[i][j] < lb || prey[i][j] > ub {
-                        prey[i][j] = intervall01.sample(&mut rng)*(ub-lb)+lb;
+                    // if prey[i][j] < lb || prey[i][j] > ub {
+                     //   prey[i][j] = intervall01.sample(&mut rng)*(ub-lb)+lb;
+                     //}
+                     if prey[i][j] < lb {
+                          prey[i][j]=lb;
                      }
-                     //if prey[i][j] < lb {
-                     //     prey[i][j]=lb;
-                     //}
-                     //if prey[i][j]>ub {
-                     //     prey[i][j]=ub;
-                     //}
+                     if prey[i][j]>ub {
+                          prey[i][j]=ub;
+                     }
                 }
 
                 //fitness(i,1)=fobj(Prey(i,:));
