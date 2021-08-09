@@ -59,7 +59,10 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
       //----------------------------------------------------
        
       while iter < max_iter {
-           //------------------- Detecting top predator ----------------- 
+
+          println!("#Iter {}", iter);
+
+       //------------------- Detecting top predator ----------------- 
           for i in 0..searchagents_no {
 
                 // space bound    
@@ -309,8 +312,8 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
           convergence_curve[iter] = top_predator_fit;
           iter +=1;
           iterf64+=1.0f64;
-         
-      }       
+          println!("Best fitness {}", top_predator_fit);    
+     }       
          return (top_predator_fit, top_predator_pos, convergence_curve);   
 }
 
