@@ -49,7 +49,7 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
       let p = 0.5;
 
       //-------------for random values generation ----------
-      let intervall01 = Uniform::from(0.0f64..1.0f64);
+      let intervall01 = Uniform::from(0.0f64..=1.0f64);
       let mut rng = rand::thread_rng(); 
       
       //-------------- to use f64 format
@@ -320,7 +320,7 @@ fn mpa (searchagents_no : usize , max_iter : usize, lb : f64, ub : f64, dim : us
 
 fn initialization(searchagents_no : usize, dim : usize, lb : f64, ub : f64)-> Vec<Vec<f64>>{
       let mut positions = vec![vec![0.0f64; dim]; searchagents_no];
-      let intervall01 = Uniform::from(0.0f64..1.0f64);
+      let intervall01 = Uniform::from(0.0f64..=1.0f64);
       let mut rng = rand::thread_rng();              
       
       for i in 0..searchagents_no {
@@ -466,7 +466,7 @@ fn randn(n : usize, m : usize)->Vec<Vec<f64>> {
 
 fn random(n : usize, m : usize)->Vec<Vec<f64>> {
       let mut randmatrix = vec![vec![0.0f64; m]; n];
-      let intervall01 = Uniform::from(0.0f64..1.0f64);
+      let intervall01 = Uniform::from(0.0f64..=1.0f64);
       let mut rng = rand::thread_rng();              
       
       for i in 0..n {
